@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #d3d3d3;
+        }
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-template-rows: repeat(3, 100px);
+            gap: 5px;
+        }
+        .cell {
+            width: 100px;
+            height: 100px;
+            background-color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2em;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+        .cell:hover {
+            background-color: #e0e0e0;
+        }
+        .cell.clicked {
+            transform: scale(1.1);
+            background-color: #f0f0f0;
+        }
+        .message {
+            margin-top: 20px;
+            font-size: 1.5em;
+        }
+        .play-again {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        .scoreboard {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+        .external-link {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            background-color: #008CBA;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="board" id="board">
+        <div class="cell" data-index="0"></div>
+        <div class="cell" data-index="1"></div>
+        <div class="cell" data-index="2"></div>
+        <div class="cell" data-index="3"></div>
+        <div class="cell" data-index="4"></div>
+        <div class="cell" data-index="5"></div>
+        <div class="cell" data-index="6"></div>
+        <div class="cell" data-index="7"></div>
+        <div class="cell" data-index="8"></div>
+    </div>
+    <div class="message" id="message"></div>
+    <div class="scoreboard">
+        <div>Player Wins: <span id="playerWins">0</span></div>
+        <div>Computer Wins: <span id="computerWins">0</span></div>
+    </div>
+    <button class="play-again" id="playAgain">Play Again</button>
+    <button class="external-link" id="externalLink">Back to From Scratch Page</button>
+
+    <script>
+        const board = document.getElementById('board');
+        const message = document.getElementById('message');
+        const playAgainButton = document.getElementById('playAgain');
+        const externalLinkButton = document.getElementById('externalLink');
+        const playerWinsDisplay = document.getElementById('playerWins');
+        const computerWinsDisplay = document.getElementById('computerWins');
+        let currentPlayer = 'X';
+        let gameState = Array(9).fill(null);
+        let gameActive = true;
+        let playerWins = 0;
+        let computerWins = 0;
+
+        board.addEventListener('click', handleCellClick);
+        playAgainButton.addEventListener('click', resetGame);
+        externalLinkButton.addEventListener('click', () => {
+            window.location.href="fromscratch.html"; // Replace with your external link
+        });
+
+        function handleCellClick(event) {
+            const cell = event.target;
+            const index = cell.dataset.index;
+
+            if (gameState[index] || !cell.classList.contains('cell') || !gameActive) {
+                return;
+            }
+
+            gameState[index] = currentPlayer;
+            cell.textContent = currentPlayer;
+            cell.classList.add('clicked');
+
+            if (checkWin()) {
+                if (currentPlayer === 'X') {
+                    message.textContent = 'Nice job! You win!';
+                    playerWins++;
+                    playerWinsDisplay.textContent = playerWins;
+                } else {
+                    message.textContent = 'Computer Wins. Better Luck Next time';
+                    computerWins++;
+                    computerWinsDisplay.textContent = computerWins;
+                }
+                gameActive = false;
+            } else if (gameState.every(cell => cell)) {
+                message.textContent = 'Draw!';
+                gameActive = false;
+            } else {
+                currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+                if (currentPlayer === 'O') {
+                    setTimeout(computerMove, 500); // Adding a slight delay for computer move
+                }
+            }
+        }
+
+        function computerMove() {
+            let bestMove = findBestMove();
+            gameState[bestMove] = 'O';
+            const cell = document.querySelector(`.cell[data-index='${bestMove}']`);
+            cell.textContent = 'O';
+            cell.classList.add('clicked');
+
+            if (checkWin()) {
+                message.textContent = 'Computer Wins. Better Luck Next time';
+                computerWins++;
+                computerWinsDisplay.textContent = computerWins;
+                gameActive = false;
+            } else if (gameState.every(cell => cell)) {
+                message.textContent = 'Draw!';
+                gameActive = false;
+            } else {
+                currentPlayer = 'X';
+            }
+        }
+
+        function findBestMove() {
+            const winPatterns = [
+                [0, 1, 2], [3, 4, 5], [6, 7, 8],
+                [0, 3, 6], [1, 4, 7], [2, 5, 8],
+                [0, 4, 8], [2, 4, 6]
+            ];
+
+            // Check if computer can win
+            for (let pattern of winPatterns) {
+                const [a, b, c] = pattern;
+                if (gameState[a] === 'O' && gameState[b] === 'O' && !gameState[c]) return c;
+                if (gameState[a] === 'O' && gameState[c] === 'O' && !gameState[b]) return b;
+                if (gameState[b] === 'O' && gameState[c] === 'O' && !gameState[a]) return a;
+            }
+
+            // Block player's win
+            for (let pattern of winPatterns) {
+                const [a, b, c] = pattern;
+                if (gameState[a] === 'X' && gameState[b] === 'X' && !gameState[c]) return c;
+                if (gameState[a] === 'X' && gameState[c] === 'X' && !gameState[b]) return b;
+                if (gameState[b] === 'X' && gameState[c] === 'X' && !gameState[a]) return a;
+            }
+
+            // Choose center if available
+            if (!gameState[4]) return 4;
+
+            // Choose a random available cell
+            let availableCells = gameState.map((cell, index) => cell === null ? index : null).filter(index => index !== null);
+            return availableCells[Math.floor(Math.random() * availableCells.length)];
+        }
+
+        function checkWin() {
+            const winPatterns = [
+                [0, 1, 2], [3, 4, 5], [6, 7, 8],
+                [0, 3, 6], [1, 4, 7], [2, 5, 8],
+                [0, 4, 8], [2, 4, 6]
+            ];
+
+            return winPatterns.some(pattern => {
+                const [a, b, c] = pattern;
+                return gameState[a] && gameState[a] === gameState[b] && gameState[a] === gameState[c];
+            });
+        }
+
+        function resetGame() {
+            gameState = Array(9).fill(null);
+            currentPlayer = 'X';
+            gameActive = true;
+            message.textContent = '';
+            document.querySelectorAll('.cell').forEach(cell => {
+                cell.textContent = '';
+                cell.classList.remove('clicked');
+            });
+        }
+    </script>
+</body>
+</html>

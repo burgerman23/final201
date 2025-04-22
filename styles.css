@@ -1,0 +1,91 @@
+body{
+    background-color: rgb(255, 239, 215);
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+   
+}
+.header{
+   
+    left: 5px;
+    right: 5px;
+    top: 0px;
+}
+#top{
+    font-weight: bold;
+    font-size: 400%;
+    color: white;
+    background-color: #0062b8;
+}
+.list{
+    font-style: italic;
+    color: rgb(167, 167, 167);
+    list-style-type:disc;
+    font-size: 150%;
+    text-decoration: none;
+}
+.image{
+    width: 29%;
+    height: auto;
+}
+body{
+    text-align: center;
+}
+.centeredlist1{
+    justify-content: center;
+    padding: 0;
+    list-style-position: inside;
+    margin: auto;
+    display: table;
+    text-align: center;
+}
+.player{
+    font-weight: bold;
+    font-size: 200%;
+}
+#topplayers{
+    font-size: 250%;
+}
+.first{
+    background-color: navajowhite;
+}
+.footer{
+
+    line-height: 100px;
+    left: 5px;
+    right: 5px;
+    height: 100px;
+    background-color: #0062b89f;
+    color: blanchedalmond;
+}
+a{
+    color: antiquewhite;
+    font-size: x-large;
+   text-decoration: none;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+a:hover{
+    color: gray;
+}
+nav{
+    padding: 40px;
+    line-height: 40px;
+}
+nav a{
+    color: #0062b8;
+    padding: 20px;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+nav a:hover{
+    background-color: bisque;
+}
+.stinky{
+    position: fixed;
+    left: 5px;
+    right: 5px;
+    bottom: 0px;
+    background-color: rgb(244, 186, 114);
+    color: white;
+    height: 22px;
+    line-height: 7px;
+    font-size: xx-small;
+}
+
